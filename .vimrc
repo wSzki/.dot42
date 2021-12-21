@@ -14,16 +14,26 @@
 "################################################ "
 "### VIMPLUG INSTALL ### "
 "################################################ "
+if empty(glob('~/.vim/autoload/plug.vim'))
+	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 "################################################ "
 "### INTERFACE SETUP ### "
 "################################################ "
 " Syntax
 """"""""
 syntax on
+syn match cType "\<[a-zA-Z_][a-zA-Z0-9_]*_[t]\>"
+syn match cType "\<[t]_*[a-zA-Z_][a-zA-Z0-9_]\>"
+
 
 " Settings
 """""""""""
 set mouse=a
+set splitright
 set clipboard^=unnamed,unnamedplus
 set nu
 set scrolloff=5
@@ -151,15 +161,16 @@ autocmd VimLeave * call system("xclip -o | xclip -selection c")
 nnoremap ; :
 vnoremap ; :
 inoremap <C-Space> <C-]>
-
 " Indent and center
+noremap <Leader>n :!norminette %<CR>
+
 map gg gg=G''zz ml:execute 'match Search /\%'.line('.').'l/'<CR>
-map g= gaip*=
-map g\| gaip*\|
-map g. gaip*.
-map g, gaip*,
-map g<Space> gaip*<Space>
+
+
+" Go to file under cursor
 map gf :Ack<CR>q
+
+" Surround
 map ( saiw(
 "))
 map { saiw{
@@ -170,6 +181,7 @@ map <TAB><TAB> za
 
 " Reload and PlugInstall
 noremap <Leader>wso :w <CR>:so %<CR>:PlugInstall<CR><ESC>
+noremap <Leader>o :silent execute '!kitty & disown'<CR><ESC>
 "noremap <Leader>ack :Ack<CR>q
 
 " Toggle relative number
@@ -180,8 +192,14 @@ nnoremap <CR> :match<CR>:noh<CR>
 inoremap <ESC> <ESC><ESC>
 
 " Write
-nnoremap <C-w> <ESC><ESC><ESC>:w<CR><ESC>
-inoremap <C-w> <ESC><ESC><ESC>:w<CR><ESC>i
+nnoremap <C-s> <ESC><ESC><ESC>:w<CR><ESC>
+inoremap <C-s> <ESC><ESC><ESC>:w<CR><ESC>i
+
+" Split navigation
+nnoremap <silent> <C-Right> <c-w>l
+nnoremap <silent> <C-Left>  <c-w>h
+nnoremap <silent> <C-Up>    <c-w>k
+nnoremap <silent> <C-Down>  <c-w>j
 
 " Remap visual block
 nnoremap <C-e> <C-q>
@@ -212,11 +230,14 @@ Plug 'morhetz/gruvbox'
 Plug 'sainnhe/gruvbox-material'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-"Plug 'nightsense/shoji'
 Plug 'logico/typewriter-vim'
+Plug 'mcchrish/zenbones.nvim'
+Plug 'Soares/base16.nvim'
+Plug 'chriskempson/base16-vim'
+Plug 'arcticicestudio/nord-vim'
 "Plug 'equt/paper.vim'
 "Plug 'wimstefan/vim-artesanal'
-Plug 'mcchrish/zenbones.nvim'
+"Plug 'nightsense/shoji'
 "
 " Vim exclusive
 """"""""""""""""
@@ -231,9 +252,12 @@ endif
 if has ('nvim')
 	Plug 'neoclide/coc.nvim', {'branch': 'release'}
 	Plug 'davidgranstrom/scnvim', { 'do': {-> scnvim#install() } }
-	Plug 'wszki/nvim_tabline'
 	Plug 'honza/vim-snippets'
 	Plug 'dstein64/nvim-scrollview'
+	"Plug 'nvim-lua/plenary.nvim'
+	"Plug 'jose-elias-alvarez/null-ls.nvim'
+	"Plug 'vinicius507/norme.nvim'
+	"Plug 'wszki/nvim_tabline'
 	"Plug 'kyazdani42/nvim-web-devicons'
 endif
 
@@ -244,7 +268,6 @@ Plug 'preservim/nerdtree'
 Plug 'preservim/nerdcommenter'
 Plug 'pandark/42header.vim'
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/fzf'
 Plug 'junegunn/vim-easy-align'
 Plug 'mg979/vim-visual-multi'
 Plug 'airblade/vim-gitgutter'
@@ -258,16 +281,18 @@ Plug 'plasticboy/vim-markdown'
 Plug 'vim-scripts/restore_view.vim'
 Plug 'mbbill/undotree'
 Plug 'machakann/vim-sandwich'
-"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'stormherz/tablify'
+Plug 'bfrg/vim-cpp-modern'
+Plug 'ryanoasis/vim-devicons'
 
+"Plug 'octol/vim-cpp-enhanced-highlight'
 "Plug 'wfxr/minimap.vim'
 "Plug '/mattn/emmet-vim'
 "Plug 'sirver/ultisnips'
 "Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
-" Plug 'ryanoasis/vim-devicons' Icons without colours
+"Plug 'ryanoasis/vim-devicons' Icons without colours
 "Plug 'akinsho/bufferline.nvim'
-
 "Plug 'axlebedev/footprints'
 "Plug 'jackguo380/vim-lsp-cxx-highlight'
 "Plug 'vim-scripts/TagHighlight'
@@ -282,15 +307,15 @@ Plug 'stormherz/tablify'
 "Plug 'tommcdo/vim-exchange'
 "Plug 'gorodinskiy/vim-coloresque'
 "Plug 'junegunn/vim-peekaboo'
-"
 call plug#end()
 
+"source ~/.dot/vim/supercollider.vim
 
 "################################################ "
 "### GRUVBOX MATERIAL ### "
 "################################################ "
 let g:gruvbox_material_enable_italic = 1
-let g:gruvbox_material_enable_bold = 1
+"let g:gruvbox_material_enable_bold = 1
 let g:gruvbox_material_menu_selection_background = 'yellow'
 let g:gruvbox_material_background = 'hard'
 let g:gruvbox_material_palette = {
@@ -328,6 +353,8 @@ let g:gruvbox_material_palette = {
 			\ 'grey2':            ['#a89984',   '246'],
 			\ 'none':             ['NONE',      'NONE']
 			\ }
+			"\ green : #A3BE8C
+"" bg5 : #504945
 colorscheme gruvbox-material
 
 "################################################ "
@@ -349,13 +376,13 @@ let g:skipview_files = ['*\.vim']
 "}
 
 runtime! plugin/supertab.vim
-inoremap <s-tab> <tab>
-nnoremap gd :call CocActionAsync('doHover')<CR>
-nnoremap gD :call CocActionAsync('jumpDefinition')<CR>
-command COCSETUP :CocInstall coc-clangd coc-cmake coc-fzf coc-sh coc-snippets coc-yank
-command COCWEB :COcInstall coc-emmet coc-css coc-html
-nmap <silent> <C-k> <Plug>(coc-diagnostic-prev)
-nmap <silent>  <C-j> <Plug>(coc-diagnostic-next)
+inoremap <s-tab>  <tab>
+nnoremap gd       :call       CocActionAsync('doHover')<CR>
+nnoremap gD       :call       CocActionAsync('jumpDefinition')<CR>
+command  COCSETUP :CocInstall coc-clangd coc-cmake coc-fzf coc-sh coc-snippets coc-yank
+command  COCWEB   :COcInstall coc-emmet  coc-css   coc-html
+nmap     <silent> <C-k>       <Plug>(coc-diagnostic-prev)
+nmap     <silent> <C-j>       <Plug>(coc-diagnostic-next)
 
 
 "################################################# "
@@ -365,39 +392,53 @@ nmap <silent>  <C-j> <Plug>(coc-diagnostic-next)
 xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
+map g=  gaip*=
+map g\| gaip*\|
+map g.  gaip*.
+map g,  gaip*,
+map g<Space> gaip*<Space>
 
 "################################################ "
 "### FOOTPRINTS ### "
 "################################################ "
-let g:footprintsColor = '#3A3A3A'
-let g:footprintsTermColor = '208'
-let g:footprintsEasingFunction = 'linear'
-let g:footprintsHistoryDepth = 20
+let g:footprintsColor            = '#3A3A3A'
+let g:footprintsTermColor        = '208'
+let g:footprintsEasingFunction   = 'linear'
+let g:footprintsHistoryDepth     = 20
 let g:footprintsExcludeFiletypes = ['magit', 'nerdtree', 'diff']
 let g:footprintsEnabledByDefault = 1
-let g:footprintsOnCurrentLine = 0
+let g:footprintsOnCurrentLine    = 0
+
+"################################################ "
+"### TABLINE ### "
+"################################################ "
+"let bufferline = get(g:, 'bufferline', {})
+"let bufferline.icons = v:true
+"let bufferline.animation = v:true
+"let bufferline.tabpages = v:true
 
 "################################################ "
 "### AIRLINE ### "
 "################################################ "
-"let g:airline_theme='gruvbox_material'
-"let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled   = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline_theme                        = 'gruvbox_material'
 "let g:airline_theme='base16'
 "let g:airline#extensions#tabline#formatter = 'default'
 "
 "################################################ "
 "### RAINBOW BRACKETS ### "
 "################################################ "
-map <C-b> :RainbowToggle<CR>
+map <C-b>                                  :RainbowToggle<CR>
 "let g:rainbow_active = 1
 
 "################################################ "
 "### SMOOTH SCROLL ### "
 "################################################ "
 
-noremap  <silent> <PageUp>   :call smooth_scroll#up(25, 3, 1)<CR>
-noremap  <silent> <PageDown> :call smooth_scroll#down(25, 3, 1)<CR>
-inoremap <silent> <PageUp>   <ESC>:call smooth_scroll#up(25, 3, 1)<CR>
+noremap  <silent> <PageUp>   :call      smooth_scroll#up(25,   3, 1)<CR>
+noremap  <silent> <PageDown> :call      smooth_scroll#down(25, 3, 1)<CR>
+inoremap <silent> <PageUp>   <ESC>:call smooth_scroll#up(25,   3, 1)<CR>
 inoremap <silent> <PageDown> <ESC>:call smooth_scroll#down(25, 3, 1)<CR>
 
 "################################################ "
@@ -415,18 +456,36 @@ nmap <F2>			<ESC>:ColorToggle<CR>
 "nmap <leader><F2>   <Plug>ToggleSchemeHighlight
 
 "################################################ "
+"### NERDTREE ### "
+"################################################ "
+nmap <C-p> :NERDTreeToggle<CR>
+let g:NERDTreeWinSize=15
+let NERDTreeMinimalUI=1
+" Start NERDTree and put the cursor back in the other window.
+"autocmd VimEnter * NERDTree | wincmd p
+
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+" Close the tab if NERDTree is the only window remaining in it.
+autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+			\ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+
+"################################################ "
 "### VISUAL-MULTIPLE-CURSORS ### "
 "################################################ "
 let g:VM_maps = {}
-let g:VM_maps["Select All"]                  = '\\A'
-let g:VM_maps["Add Cursor Down"]             = '<C-Down>'
-let g:VM_maps["Add Cursor Up"]               = '<C-Up>'
+let g:VM_maps["Select All"]                  = '\\a'
+let g:VM_maps["Add Cursor Down"]             = '<S-Down>'
+let g:VM_maps["Add Cursor Up"]               = '<S-Up>'
 let g:VM_maps["Add Cursor At Pos"]           = '\\\'
-"let g:VM_maps['Find Under']                  = '<C-n>'
+let g:VM_maps['Find Under']                  = '<C-n>'
 "let g:VM_maps['Find Subword Under']          = '<C-n>'
 "let g:VM_maps["Start Regex Search"]          = '\\/'
 "let g:VM_maps["Visual Regex"]                = '\\/'
-"let g:VM_maps["Visual All"]                  = '\\A'
+"let g:VM_maps["Visual All"]                  = '\\a'
 "let g:VM_maps["Visual Add"]                  = '\\a'
 "let g:VM_maps["Visual Find"]                 = '\\f'
 "let g:VM_maps["Visual Cursors"]              = '\\c'
@@ -441,19 +500,17 @@ let g:fzf_preview_window = 'right:60%'
 "### UNDOTREE ### "
 "################################################ "
 nnoremap <C-u> :UndotreeToggle<cr>
-let g:undotree_WindowLayout = 2
-let g:undotree_ShortIndicators = 1
-let g:undotree_SetFocusWhenToggle = 1
+let g:undotree_WindowLayout         = 2
+let g:undotree_ShortIndicators      = 1
+let g:undotree_SetFocusWhenToggle   = 1
 let g:undotree_HighlightChangedText = 1
-let g:undotree_HelpLine = 1
-"try
-"set undodir=~/.undodir
-"set undofile
-"catch
-"endtry
+let g:undotree_HelpLine             = 1
 if has("persistent_undo")
-	set undodir=~/.undodir
-	set undofile
+	try
+		set undodir=~/.undodir
+		set undofile
+	catch
+	endtry
 endif
 
 "################################################ "
@@ -659,24 +716,46 @@ endif
 "################################################ "
 "### NERDTREE ### "
 "################################################ "
+"nmap <C-p> :NERDTreeToggle<CR>
+"let g:NERDTreeWinSize=15
+"let NERDTreeMinimalUI=1
+"" Start NERDTree and put the cursor back in the other window.
+"autocmd VimEnter * NERDTree | wincmd p
+
+"" Exit Vim if NERDTree is the only window remaining in the only tab.
+"autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+"" Close the tab if NERDTree is the only window remaining in it.
+"autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+"" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+"autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+			"\ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+
 "autoquit if only left is nerdtree
 "augroup vimrc_autocmd
 "autocmd!
+"
 ""toggle quickfix window
 "autocmd BufReadPost quickfix map <buffer> <leader>qq :cclose<cr>|map <buffer> <c-p> <up>|map <buffer> <c-n> <down>
 "autocmd FileType unite call s:unite_settings()
+
 "" obliterate unite buffers (marks especially).
 "autocmd BufLeave \[unite\]* if "nofile" ==# &buftype | setlocal bufhidden=wipe | endif
+
 "" Jump to the last position when reopening a file
 ""autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 "autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 "autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
 "" Start NERDTree
 ""autocmd VimEnter * NERDTree
+
 "" Go to previous (last accessed) window.
 "autocmd VimEnter * wincmd p
-nmap <C-p> :NERDTreeToggle<CR>
+"let NERDTreeMapPreviewVSplit="\r"
+"let NERDTreeMapCustomOpen="\z"
+
 "" open in new tab
 "let NERDTreeMapOpenInTab='<ENTER>'
 "augroup END

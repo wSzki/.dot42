@@ -1,2 +1,2 @@
-# wsz
-# wsz
+
+` Dotfiles for 42 school`

@@ -20,6 +20,14 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" INSTALL PYTHON VIM
+"	python3 -m pip install --user --upgrade pynvim
+
+" LINK VIMRC to NVIMRC > ~/.config/nvim/init.vim
+"set runtimepath^=~/.vim runtimepath+=~/.vim/after
+"let &packpath = &runtimepath
+"source ~/.vimrc
+
 "################################################ "
 "### INTERFACE SETUP ### "
 "################################################ "
@@ -68,8 +76,8 @@ set breakindent
 set breakindentopt=shift:2
 set showbreak=↳
 set nocursorcolumn
-set nocursorline
-"set cursorline
+"set nocursorline
+set cursorline
 "set showbreak=\\\\\↳
 
 " Search
@@ -158,6 +166,9 @@ autocmd VimLeave * call system("xclip -o | xclip -selection c")
 "################################################ "
 " ### MAPPINGS ####
 "################################################ "
+
+command PYNVIM :!python3 -m pip install --user --upgrade pynvim
+
 nnoremap ; :
 vnoremap ; :
 inoremap <C-Space> <C-]>
@@ -200,6 +211,11 @@ nnoremap <silent> <C-Right> <c-w>l
 nnoremap <silent> <C-Left>  <c-w>h
 nnoremap <silent> <C-Up>    <c-w>k
 nnoremap <silent> <C-Down>  <c-w>j
+
+"open term
+nnoremap <Leader>t    :20Term<CR>
+nnoremap <Leader>T    :VTerm<CR>
+
 
 " Remap visual block
 nnoremap <C-e> <C-q>
@@ -254,6 +270,7 @@ if has ('nvim')
 	Plug 'davidgranstrom/scnvim', { 'do': {-> scnvim#install() } }
 	Plug 'honza/vim-snippets'
 	Plug 'dstein64/nvim-scrollview'
+	Plug 'vimlab/split-term.vim'
 	"Plug 'nvim-lua/plenary.nvim'
 	"Plug 'jose-elias-alvarez/null-ls.nvim'
 	"Plug 'vinicius507/norme.nvim'
@@ -380,7 +397,7 @@ inoremap <s-tab>  <tab>
 nnoremap gd       :call       CocActionAsync('doHover')<CR>
 nnoremap gD       :call       CocActionAsync('jumpDefinition')<CR>
 command  COCSETUP :CocInstall coc-clangd coc-cmake coc-fzf coc-sh coc-snippets coc-yank
-command  COCWEB   :COcInstall coc-emmet  coc-css   coc-html
+command  COCWEB   :CocInstall coc-emmet  coc-css   coc-html
 nmap     <silent> <C-k>       <Plug>(coc-diagnostic-prev)
 nmap     <silent> <C-j>       <Plug>(coc-diagnostic-next)
 

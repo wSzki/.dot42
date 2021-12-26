@@ -11,12 +11,7 @@ zplug "subnixr/minimal"
 zplug load #--verbose
 
 ########################## SYNTAX HIGHLIGHTING #######################
-cd ~/wsz
 
-[[ $- != *i* ]] && return
-# Otherwise start tmux
-[[ -z "$TMUX" ]] && exec tmux
-export PATH=~/.local/bin:~/wsz/bin:/mnt/nfs/homes/wszurkow/.local/lib/python3.8/site-packages:$PATH
 ZSH_HIGHLIGHT_STYLES[path]='fg=gray, italic'
 ZSH_HIGHLIGHT_STYLES[builtin]='fg=yellow, bold'
 ZSH_HIGHLIGHT_STYLES[alias]='fg=yellow, bold'
@@ -47,7 +42,7 @@ bindkey    "^F" 			fzf-file-widget
 
 ####################### ZSH COMPLETION SUBSTRING #####################
 
-#zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 zstyle ':completion:*' completer _complete
 zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+l:|=* r:|=*'
 autoload -Uz compinit
@@ -73,19 +68,22 @@ setopt AUTO_CD
 
 ########################### SOURCE ###################################
 
-source ~/.fzf/shell/key-bindings.zsh
-source ~/.fzf/shell/completion.zsh
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
 #source /etc/profile.d/autojump.zsh
 #source /home/wsz/.config/broot/launcher/bash/br
 
 ########################### DOTFILES ##################################
 
-alias zrc="vim ~/.zshrc"
-alias zpf="vim ~/.zprofile"
-alias xrc="vim ~/.xinitrc"
-alias vrc="vim ~/.vimrc"
+DOTFILES="~/.dot/dotfiles"
+alias tlprc="sudo vim /etc/tlp.conf"
+alias zpf="vim $DOTFILES/zprofile"
+alias zrc="vim $DOTFILES/zshrc"
+alias xrc="vim $DOTFILES/xinitrc"
+alias vrc="vim $DOTFILES/vimrc"
 alias vimc="vim ~/.vim/ftplugin/c_mappings.vim"
 alias csnippets="vim /home/wsz/.config/coc/ultisnips/c.snippets"
+alias cppsnippets="vim /home/wsz/.config/coc/ultisnips/cpp.snippets"
 alias vdir="vim ~/.dot/vim/"
 alias krc="vim ~/.config/kitty/kitty.conf"
 alias irc="vim ~/.config/i3/config"
@@ -94,15 +92,16 @@ alias isrc="vim ~/.config/i3/i3status.conf"
 alias ib2rc="vim ~/.config/i3/i3blocks2.conf"
 alias trc="vim ~/.tmux.conf"
 alias config="cd ~/.config"
+alias dotfiles="cd $DOTFILES"
 
 ########################## VIM ######################################
 
 FILE="/etc/passwd"
-alias vim="nvim -u ~/.vimrc"
+if [ -f /bin/nvim ];then alias vim="nvim -O" ; fi
 
 ########################### FASD ###############################
 
-eval "$(~/wsz/bin/fasd --init auto)"
+eval "$(fasd --init auto)"
 alias j="fasd_cd -d"
 alias vv="f -e nvim"
 alias v="xdotool key v i m space asterisk asterisk Tab"
@@ -121,7 +120,7 @@ alias delete="mv -t ~/.Trash/"
 
 ### DEFAULTS
 alias ..="cd .."
-alias cddl="cd ~/Downloads"
+alias cddl="cd ~/.mozilla/downloads"
 alias back="~/.dot/backup.sh"
 alias autopush="git add .; git status; git commit -m "autopush"; git push"
 alias n0="vim $DOT/notes.md"
@@ -130,19 +129,36 @@ alias norme="norminette"
 #if [ -f ~/.local/bin/colour-valgrind ]; then alias valgrind="valgrind_color --tool=memcheck --leak-check=full --leak-resolution=high --show-reachable=yes" ; fi
 alias valgrind="valgrind --tool=memcheck --leak-check=full --leak-resolution=high --show-reachable=no -s --leak-check=full "
 
+MAKEFILE_PATH="~/.dot/bin/scripts/newMakefile"
+alias Makefile_create="/bin/cat $MAKEFILE_PATH"
+alias Makefile_edit="vim $MAKEFILE_PATH"
 
 ### MISC
+alias heavy="ps -Ao user,uid,comm,pid,pcpu,tty --sort=-pcpu | head -n 6"
+alias sudo_lock="sudo passwd -l root"
+alias sudo_unlock="sudo passwd -u root"
+alias cat="bat"
+alias serve="python -m http.server 8000"
 alias cal="cal -m"
 alias vsch="vim ~/.dot/sch.md"
 alias 42="cd ~/42"
 alias powertop="sudo powertop"
 alias autotune="sudo powertop --auto-tune"
-alias playlist="vim ~/.dot/playlist"
+alias playlist="vim ~/.config/mpv/playlist"
 alias tmp="cd ~/.tmp"
 alias dot="cd ~/.dot"
 alias ddgr="ddgr --colors 'djcddf'"
 alias rain="buku -a"
 alias buku="buku --colors 'djedf'"
+alias nn="kitty & disown && clear"
+alias list_functions="nm -g"
+alias echo="echo -e"
+
+### UXN
+alias uxnemu="~/.uxn/bin/uxnemu"
+alias drum_rack="uxnemu ~/.uxn/bin/drum.rom"
+alias piano_rack="uxnemu ~/.uxn/bin/piano.rom"
+alias uxn="cd ~/.uxn"
 
 ### GIT
 alias gcl="git clone"
@@ -162,7 +178,7 @@ alias nmap_scan_0="sudo arpi -net=192.168.0.0/24 && sudo arpi"
 
 ### SUPERCOLLIDER
 alias collider="pasuspender -- jackd ; jackd -r -d alsa &> /dev/null & vim -c "SCNvimStart" ~/.dot/supercollider/main.sc && killall jackd"
-#alias startjack="pasuspender -- jackd ; jackd -r -d alsa &> /dev/null &"
+alias startjack="pasuspender -- jackd ; jackd -r -d alsa &> /dev/null &"
 #alias collider="vim  ~/.dot/supercollider/main.sc"
 
 ### RENOISE
@@ -268,9 +284,9 @@ alias lsa="k -hA --sort WORD"
 #alias youtube-dl-mp3="youtube-dl --extract-audio --audio-format mp3     "
 #alias ytdlm="cdyt; youtube-dl -x --audio-format wav"
 #alias dddl="cdyt; youtube-dl -xi --audio-format wav"
-#alias dddlhere="youtube-dl -xi --audio-format wav"
+alias dddlhere="youtube-dl -xi --audio-format wav"
 #alias ddlddl="cdyt; youtube-dl -xi --audio-format wav --no-playlist"
-#alias youtube-dl-wav="youtube-dl -xo '%(title)s.%(ext)s' --audio-format wav"
+alias youtube-dl-wav="youtube-dl -xo '%(title)s.%(ext)s' --audio-format wav"
 #alias youtube-dl-playlist="youtube-dl -a playlist -xo '%(title)s.%(ext)s' --audio-format wav"
 
 
@@ -430,3 +446,4 @@ alias touchpad_restart="xinput disable 11 && xinput enable 11"
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
+
